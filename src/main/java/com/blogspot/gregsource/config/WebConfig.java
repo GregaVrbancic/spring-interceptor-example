@@ -25,13 +25,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setPrefix("/WEB-INF/views/");
         resolver.setSuffix(".jsp");
-
         return resolver;
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry interceptorRegistry){
+    public void addInterceptors(InterceptorRegistry interceptorRegistry) {
         interceptorRegistry.addInterceptor(new AuthenticationInterceptor())
+                .addPathPatterns("/secure")
                 .addPathPatterns("/secure/*");
     }
 }

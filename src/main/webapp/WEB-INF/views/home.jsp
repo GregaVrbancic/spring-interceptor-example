@@ -5,6 +5,7 @@
 </head>
 <body>
 <h2>${hello}!</h2>
-</body>
 
+<a href="./secure/">Login to secure pages!</a>
+</body>
 </html>

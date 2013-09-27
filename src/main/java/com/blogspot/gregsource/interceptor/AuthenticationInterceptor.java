@@ -6,6 +6,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,22 +20,24 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
 
     //intercept request before it reaches the controller
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
-
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         logger.info("Intercepting: " + request.getRequestURI());
 
-        // Do some changes to the incoming request object
-        updateRequest(request);
+        //get session from request
+        HttpSession session = request.getSession();
+        logger.info(session.getAttribute("loginUser"));
 
-        return true;
-    }
+        //check if user already have set attribute userLogin
+        if (session.getAttribute("userLogin") != null)
+            return true;
 
-    /**
-     * The data added to the request would most likely come from a database
-     */
-    private void updateRequest(HttpServletRequest request) {
-        logger.info("Updating request object");
-        request.setAttribute("commonData",
-                "This string is required in every request");
+        String[] splitURI = request.getRequestURI().split("/");
+        if (splitURI[splitURI.length - 1].equals("login"))
+            return true;
+
+        //if user is not logged in we redirect him to login
+        logger.info("redirect to secure/login");
+        response.sendRedirect("login");
+        return false;
     }
 }
